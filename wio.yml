@@ -2,7 +2,7 @@ type: pkg
 
 project:
   name: wio-sqlitecpp
-  version: 1.0.1
+  version: 1.0.4
   organization: waterloop
   description: "Wio package for SQLiteC++ (SQLiteCpp): a smart and easy to use C++ SQLite3 wrapper"
   repository: https://github.com/waterloop/wio-sqlitecpp
@@ -15,7 +15,7 @@ project:
   - sqlite3
   - sqlitecpp
   compile_options:
-    wio_version: 0.4.0
+    wio_version: 0.6.2
     default_target: tests
     flags: [-Wall, -Wextra, -Wpedantic, -Wno-long-long, -Wswitch-enum, -Wshadow, -Winline, -fPIC]
 
@@ -26,4 +26,14 @@ targets:
 
 dependencies:
   wio-sqlite3:
-    version: 1.0.1
+    version: 1.0.3
+    linker_flags:
+    - $darwin(${CMAKE_DL_LIBS} pthread)
+    - $linux(${CMAKE_DL_LIBS} pthread)
+    - $windows(ssp)
+
+libraries:
+  Threads:
+    cmake_package: true
+    required: true
+
