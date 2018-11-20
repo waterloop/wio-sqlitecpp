@@ -122,11 +122,9 @@ matrix:
         - CXXFLAGS=-lstdc++
 
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; 
-    then brew tap osx-cross/avr; brew tap wio/wio; brew install wio;
-    else sudo apt-get update -qq ; curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - ; sudo apt-get install -y nodejs; sudo npm install -g wio --unsafe-perm; 
-    fi
-
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - ; sudo apt-get install -y nodejs; fi
+  - sudo npm install -g wio --unsafe-perm
+    
 # scripts to run before build
 before_script:
   - wio install
