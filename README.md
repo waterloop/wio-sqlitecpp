@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/waterloop/wio-sqlitecpp.svg?branch=master)](https://travis-ci.org/waterloop/wio-sqlitecpp)
+
 Wio SQLiteC++
 ---------
 

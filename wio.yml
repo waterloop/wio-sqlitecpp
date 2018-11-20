@@ -17,7 +17,15 @@ project:
   compile_options:
     wio_version: 0.6.2
     default_target: tests
-    flags: [-Wall, -Wextra, -Wpedantic, -Wno-long-long, -Wswitch-enum, -Wshadow, -Winline, -fPIC]
+    flags:
+    - -Wall
+    - -Wextra
+    - -Wpedantic
+    - -Wno-long-long 
+    - -Wswitch-enum
+    - -Wshadow
+    - -Winline
+    - -fPIC
 
 targets:
   tests:

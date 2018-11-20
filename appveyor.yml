@@ -6,6 +6,10 @@ version: "{build}"
 # scripts that run after cloning repository
 install:
  - git submodule update --init googletest
+ - Set-ExecutionPolicy RemoteSigned -scope CurrentUser
+ - iex (new-object net.webclient).downloadstring('https://get.scoop.sh')
+ - scoop bucket add wio https://github.com/wio/wio-bucket.git
+ - scoop install wio
 
 # configurations to add to build matrix
 # TODO: VS2010->VS2015 and Win32/Win64 (see https://github.com/google/googletest/blob/master/appveyor.yml)
@@ -16,11 +20,8 @@ configuration:
  
 # scripts to run before build
 before_build:
-  - mkdir build
-  - cd build
-  - cmake -DSQLITECPP_BUILD_EXAMPLES=ON -DSQLITECPP_BUILD_TESTS=ON -DSQLITECPP_RUN_CPPCHECK=OFF ..
+  - wio install
 
 # build examples, and run tests (ie make & make test)
 build_script:
-  - cmake --build .
-  - ctest --output-on-failure
+  - wio build -all

@@ -6,6 +6,8 @@ dist: trusty
 
 cache:
   apt: true
+  brew: true
+  npm: true
 
 # NOTE: no language, so that we can set CXX and CC env vars as required
 #language: cpp
@@ -17,7 +19,6 @@ matrix:
       env:
         - CC=gcc
         - CXX=g++
-        - CXXFLAGS="-Wall -Wextra -pedantic"
     # gcc 4.9 std=default
     - compiler: gcc
       addons:
@@ -29,7 +30,6 @@ matrix:
       env:
         - CC=gcc-4.9
         - CXX=g++-4.9
-        - CXXFLAGS="-Wall -Wextra -pedantic"
     # gcc 5 std=c++03
     - compiler: gcc
       addons:
@@ -41,7 +41,6 @@ matrix:
       env:
         - CC=gcc-5
         - CXX=g++-5
-        - CXXFLAGS="-std=c++03 -Wall -Wextra -pedantic"
     # gcc 5 std=c++11
     - compiler: gcc
       addons:
@@ -53,7 +52,6 @@ matrix:
       env:
         - CC=gcc-5
         - CXX=g++-5
-        - CXXFLAGS="-std=c++11 -Wall -Wextra -pedantic"
     # gcc 5 default
     - compiler: gcc
       addons:
@@ -65,7 +63,6 @@ matrix:
       env:
         - CC=gcc-5
         - CXX=g++-5
-        - CXXFLAGS="-Wall -Wextra -pedantic"
     # gcc 5 std=c++11
     - compiler: gcc
       addons:
@@ -77,7 +74,6 @@ matrix:
       env:
         - CC=gcc-5
         - CXX=g++-5
-        - CXXFLAGS="-std=c++11 -Wall -Wextra -pedantic"
     # gcc 5 std=c++14
     - compiler: gcc
       addons:
@@ -89,19 +85,6 @@ matrix:
       env:
         - CC=gcc-5
         - CXX=g++-5
-        - CXXFLAGS="-std=c++14 -Wall -Wextra -pedantic"
-    # gcc 5 std=c++1z
-    - compiler: gcc
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-5
-      env:
-        - CC=gcc-5
-        - CXX=g++-5
-        - CXXFLAGS="-std=c++1z -Wall -Wextra -pedantic"
     # gcc 6 std=c++14
     - compiler: gcc
       addons:
@@ -113,19 +96,6 @@ matrix:
       env:
         - CC=gcc-6
         - CXX=g++-6
-        - CXXFLAGS="-std=c++14 -Wall -Wextra -pedantic"
-    # gcc 6 std=c++1z
-    - compiler: gcc
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-6
-      env:
-        - CC=gcc-6
-        - CXX=g++-6
-        - CXXFLAGS="-std=c++1z -Wall -Wextra -pedantic"
     # gcc 7 std=c++14
     - compiler: gcc
       addons:
@@ -137,19 +107,6 @@ matrix:
       env:
         - CC=gcc-7
         - CXX=g++-7
-        - CXXFLAGS="-std=c++14 -Wall -Wextra -pedantic"
-    # gcc 7 std=c++1z
-    - compiler: gcc
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-7
-      env:
-        - CC=gcc-7
-        - CXX=g++-7
-        - CXXFLAGS="-std=c++1z -Wall -Wextra -pedantic"
     # clang default
     - compiler: clang
       env:
@@ -158,26 +115,22 @@ matrix:
     # os x
     - compiler: clang
       os: osx
+      addons:
       env:
         - CC=clang
         - CXX=clang
         - CXXFLAGS=-lstdc++
 
 before_install:
-  # coveralls test coverage:
-  - if [[ "$CXX" == "g++" ]]; then pip install --user cpp-coveralls ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; 
+    then brew tap osx-cross/avr; brew tap wio/wio; brew install wio;
+    else sudo apt-get update -qq ; curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - ; sudo apt-get install -y nodejs; sudo npm install -g wio --unsafe-perm; 
+    fi
 
 # scripts to run before build
 before_script:
-  - mkdir build
-  - cd build
-  - cmake -DCMAKE_BUILD_TYPE=Debug -DSQLITECPP_USE_GCOV=ON -DSQLITECPP_BUILD_EXAMPLES=ON -DSQLITECPP_BUILD_TESTS=ON ..
+  - wio install
 
 # build examples, and run tests (ie make & make test)
 script:
-  - cmake --build .
-  - ctest --verbose --output-on-failure
-
-# generate and publish GCov coveralls results
-after_success:
-  - if [[ "$CXX" == "g++" ]]; then coveralls --root .. -e examples -e googletest -e sqlite3 -e tests -E ".*feature_tests.*" -E ".*CompilerId.*" --gcov-options '\-lp' ; fi
+  - wio build -all
