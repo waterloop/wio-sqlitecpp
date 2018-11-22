@@ -2,7 +2,7 @@ type: pkg
 
 project:
   name: wio-sqlitecpp
-  version: 1.0.5
+  version: 2.2.0
   organization: waterloop
   description: "Wio package for SQLiteC++ (SQLiteCpp): a smart and easy to use C++ SQLite3 wrapper"
   repository: https://github.com/waterloop/wio-sqlitecpp
